@@ -1,0 +1,68 @@
+{
+  "name": "@0xgasless/core",
+  "version": "1.0.0",
+  "description": "Secure embedded wallet SDK for EVM chains — AWS KMS-backed signing via iframe widget",
+  "author": "0xGas <hello@0xgas.dev>",
+  "license": "MIT",
+  "homepage": "https://docs.0xgas.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/0xgasless/0xgas-auth"
+  },
+  "keywords": [
+    "ethereum",
+    "wallet",
+    "evm",
+    "kms",
+    "erc4337",
+    "smart-account",
+    "gasless",
+    "web3",
+    "signing",
+    "embedded-wallet"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@0xgasless/smart-account": "file:../0xgasless-smart-sdk",
+    "viem": ">=2.0.0"
+  },
+  "peerDependencies": {
+    "viem": ">=2.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "viem": "^2.0.0"
+  }
+}
