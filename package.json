@@ -1,6 +1,6 @@
 {
   "name": "@0xgasless/core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Secure embedded wallet SDK for EVM chains — AWS KMS-backed signing via iframe widget",
   "author": "0xGas <hello@0xgas.dev>",
   "license": "MIT",
