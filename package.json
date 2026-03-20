@@ -55,7 +55,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@0xgasless/smart-account": "file:../0xgasless-smart-sdk",
+    "@0xgasless/smart-account-sdk": "0.0.12",
     "viem": ">=2.0.0"
   },
   "peerDependencies": {
