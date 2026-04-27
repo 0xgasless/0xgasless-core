@@ -32,3 +32,21 @@ export type {
     TransactionParams,
     TokenTransferParams
 } from "./OxGasClient";
+
+// Server Wallet (Backend / Bot SDK)
+export { OxGasServerWallet } from "./OxGasServerWallet";
+export {
+    WalletNotFoundError,
+    PolicyViolationError,
+    ServerSigningError,
+    NetworkError,
+} from "./server-wallet-errors";
+export type {
+    ServerWalletOptions,
+    ServerWalletInfo,
+    CreateWalletOptions,
+    SignTransactionParams,
+    SignTransactionResult,
+    ListWalletsResponse,
+    BroadcastResult,
+} from "./server-wallet-types";
