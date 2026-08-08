@@ -1,5 +1,5 @@
 // Core
-export { OxGasAuth } from "./OxGasAuth";
+export { OxGasAuth } from "./OxGasAuth.js";
 
 // Types
 export type {
@@ -10,7 +10,7 @@ export type {
     SignTxParams,
     SignTxResult,
     SignMessageResult,
-} from "./types";
+} from "./types.js";
 
 // Errors
 export {
@@ -19,28 +19,28 @@ export {
     SigningRejectedError,
     SigningTimeoutError,
     WidgetError,
-} from "./errors";
+} from "./errors.js";
 
 // Utilities
-export { NETWORK_NAMES, VERSION } from "./constants";
+export { NETWORK_NAMES, VERSION } from "./constants.js";
 
 // Smart Account (One-Stop Client)
-export { OxGasClient } from "./OxGasClient";
-export { PaymasterMode } from "@0xgasless/smart-account";
+export { OxGasClient } from "./OxGasClient.js";
+export { PaymasterMode } from "@0xgasless/smart-account-sdk";
 export type {
     OxGasClientConfig,
     TransactionParams,
     TokenTransferParams
-} from "./OxGasClient";
+} from "./OxGasClient.js";
 
 // Server Wallet (Backend / Bot SDK)
-export { OxGasServerWallet } from "./OxGasServerWallet";
+export { OxGasServerWallet } from "./OxGasServerWallet.js";
 export {
     WalletNotFoundError,
     PolicyViolationError,
     ServerSigningError,
     NetworkError,
-} from "./server-wallet-errors";
+} from "./server-wallet-errors.js";
 export type {
     ServerWalletOptions,
     ServerWalletInfo,
@@ -49,4 +49,4 @@ export type {
     SignTransactionResult,
     ListWalletsResponse,
     BroadcastResult,
-} from "./server-wallet-types";
+} from "./server-wallet-types.js";

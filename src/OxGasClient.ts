@@ -7,9 +7,9 @@ import {
     parseUnits,
     formatUnits,
 } from "viem";
-import { OxGasAuth } from "./OxGasAuth";
-import { OxGasAuthSigner } from "./signer-adapter";
-import type { OxGasAuthConfig, WalletInfo, AuthState, SignMessageResult } from "./types";
+import { OxGasAuth } from "./OxGasAuth.js";
+import { OxGasAuthSigner } from "./signer-adapter.js";
+import type { OxGasAuthConfig, WalletInfo, AuthState, SignMessageResult } from "./types.js";
 
 // ─── Re-exported from smart-account SDK ──────────────────────────
 import {
@@ -17,7 +17,7 @@ import {
     PaymasterMode,
     type ZeroXgaslessSmartAccount,
     type UserOpResponse,
-} from "@0xgasless/smart-account";
+} from "@0xgasless/smart-account-sdk";
 
 // ─── Client Config ───────────────────────────────────────────────
 

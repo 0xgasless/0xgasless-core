@@ -6,14 +6,14 @@ import type {
     SignTxParams,
     SignTxResult,
     SignMessageResult,
-} from "./types";
-import { TypedEventEmitter } from "./events";
+} from "./types.js";
+import { TypedEventEmitter } from "./events.js";
 import {
     NotConnectedError,
     SigningRejectedError,
     SigningTimeoutError,
     WidgetError,
-} from "./errors";
+} from "./errors.js";
 import {
     DEFAULT_WIDGET_URL,
     DEFAULT_LOGIN_TIMEOUT,
@@ -22,8 +22,8 @@ import {
     IFRAME_ID,
     IFRAME_READY_DELAY,
     NETWORK_NAMES,
-} from "./constants";
-import { normalizeMessageToHex, withTimeout } from "./utils";
+} from "./constants.js";
+import { normalizeMessageToHex, withTimeout } from "./utils.js";
 
 /**
  * 0xgas-auth — Embedded wallet SDK for EVM chains.

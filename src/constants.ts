@@ -17,7 +17,7 @@ export const IFRAME_ID = "oxgas-auth-iframe";
 export const DEFAULT_Z_INDEX = 99999;
 
 /** Package version */
-export const VERSION = "1.0.0";
+export const VERSION = "1.1.1";
 
 /**
  * Common EVM network names for display in the widget.

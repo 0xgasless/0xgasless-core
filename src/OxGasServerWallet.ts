@@ -6,14 +6,14 @@ import type {
     SignTransactionResult,
     ListWalletsResponse,
     BroadcastResult,
-} from "./server-wallet-types";
+} from "./server-wallet-types.js";
 
 import {
     WalletNotFoundError,
     PolicyViolationError,
     ServerSigningError,
     NetworkError,
-} from "./server-wallet-errors";
+} from "./server-wallet-errors.js";
 
 // ─── Defaults ────────────────────────────────────────────────────
 

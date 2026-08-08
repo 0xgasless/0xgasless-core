@@ -1,4 +1,4 @@
-import { OxGasError } from "./errors";
+import { OxGasError } from "./errors.js";
 
 // ─── Server Wallet Errors ────────────────────────────────────────
 

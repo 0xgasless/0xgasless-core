@@ -1,6 +1,6 @@
 {
   "name": "@0xgasless/core",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "All-in-one SDK for secure embedded wallets, ERC-4337 smart accounts, and server-side wallet management on EVM chains",
   "author": "0xGas <hello@0xgas.dev>",
   "license": "MIT",
@@ -50,12 +50,12 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build:esm": "tsc -p tsconfig.esm.json",
-    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:cjs": "tsc -p tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
     "build": "npm run clean && npm run build:esm && npm run build:cjs",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@0xgasless/smart-account-sdk": "^0.0.13",
+    "@0xgasless/smart-account-sdk": "^0.0.15",
     "viem": ">=2.0.0"
   },
   "peerDependencies": {

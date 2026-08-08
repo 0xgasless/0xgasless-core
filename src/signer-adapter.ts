@@ -1,6 +1,6 @@
 import type { Hex, SignableMessage, TypedData, TypedDataDefinition } from "viem";
 import { hashTypedData, hashMessage } from "viem";
-import type { OxGasAuth } from "./OxGasAuth";
+import type { OxGasAuth } from "./OxGasAuth.js";
 
 /**
  * Adapter that wraps OxGasAuth into a SmartAccountSigner interface.
