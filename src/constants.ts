@@ -38,6 +38,7 @@ export const NETWORK_NAMES: Record<number, string> = {
     42161: "Arbitrum One",
     42170: "Arbitrum Nova",
     43114: "Avalanche",
+    43113: "Avalanche Fuji",
     59144: "Linea",
     534352: "Scroll",
     11155111: "Sepolia",
@@ -45,3 +46,12 @@ export const NETWORK_NAMES: Record<number, string> = {
     84531: "Base Goerli",
     421613: "Arbitrum Goerli",
 };
+
+/** 0xGasless smart account contracts on Avalanche Fuji (the SDK defaults are mainnet addresses). */
+export const AVALANCHE_FUJI = {
+    chainId: 43113,
+    factory: "0xF0b3f5146c2725e36d78F5029bc560eDfc67ADe0",
+    implementation: "0x8aF33bE7af021A6075aeB19b076fC75Bfbd2c5c3",
+    fallbackHandler: "0xdA62055b0730d1d0621aD0A446DcD6057a6d951E",
+    ecdsaModule: "0xcfb0BA514aa398085D63eC70cfEa6EC7f1094E8F",
+} as const;
