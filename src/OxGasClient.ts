@@ -9,11 +9,13 @@ import {
 } from "viem";
 import { OxGasAuth } from "./OxGasAuth.js";
 import { OxGasAuthSigner } from "./signer-adapter.js";
+import { AVALANCHE_FUJI } from "./constants.js";
 import type { OxGasAuthConfig, WalletInfo, AuthState, SignMessageResult } from "./types.js";
 
 // ─── Re-exported from smart-account SDK ──────────────────────────
 import {
     createSmartAccountClient,
+    createECDSAOwnershipValidationModule,
     PaymasterMode,
     type ZeroXgaslessSmartAccount,
     type UserOpResponse,
@@ -176,20 +178,44 @@ export class OxGasClient {
         // Wire the KMS signer adapter
         const signer = new OxGasAuthSigner(this.auth);
 
+        const chainId = this.config.chainId ?? 1;
         this.smartAccount = await createSmartAccountClient({
             signer: signer as any,
             paymasterUrl: this.config.paymasterUrl,
             bundlerUrl: this.config.bundlerUrl,
-            chainId: this.config.chainId ?? 1,
+            chainId,
+            ...(this.config.rpcUrl && { rpcUrl: this.config.rpcUrl }),
             ...(this.config.accountIndex !== undefined && {
                 index: this.config.accountIndex,
             }),
+            ...(await this.chainContractOverrides(chainId, signer)),
         });
 
         this._smartAccountAddress = await this.smartAccount.getAccountAddress();
         this.log("Smart account ready:", this._smartAccountAddress);
 
         return this._smartAccountAddress as `0x${string}`;
+    }
+
+    /**
+     * The smart-account SDK defaults to the mainnet contract addresses. On
+     * Avalanche Fuji (43113) the 0xGasless contracts live at different
+     * addresses, so pass them explicitly (otherwise the counterfactual address
+     * lookup fails against a factory that doesn't exist on Fuji).
+     */
+    private async chainContractOverrides(chainId: number, signer: unknown) {
+        if (chainId !== AVALANCHE_FUJI.chainId) return {};
+        const ecdsaModule = await createECDSAOwnershipValidationModule({
+            signer: signer as any,
+            moduleAddress: AVALANCHE_FUJI.ecdsaModule,
+        });
+        return {
+            factoryAddress: AVALANCHE_FUJI.factory,
+            implementationAddress: AVALANCHE_FUJI.implementation,
+            defaultFallbackHandler: AVALANCHE_FUJI.fallbackHandler,
+            defaultValidationModule: ecdsaModule,
+            activeValidationModule: ecdsaModule,
+        };
     }
 
     /** The smart account address (null until `setupSmartAccount` is called). */
