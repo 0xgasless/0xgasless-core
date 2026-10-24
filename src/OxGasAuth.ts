@@ -21,6 +21,7 @@ import {
     DEFAULT_Z_INDEX,
     IFRAME_ID,
     IFRAME_READY_DELAY,
+    LOGOUT_TIMEOUT,
     NETWORK_NAMES,
 } from "./constants.js";
 import { normalizeMessageToHex, withTimeout } from "./utils.js";
@@ -292,6 +293,46 @@ export class OxGasAuth extends TypedEventEmitter<OxGasAuthEvents & Record<string
     }
 
     /**
+     * Open the user's "Login methods" screen, where they can add or remove backup
+     * ways to log in (a Google account, a backup email) so they can always get
+     * back to the same wallet. Resolves when the user closes the screen.
+     *
+     * @example
+     * ```ts
+     * await auth.manageAccount(); // e.g. from a "Login & recovery" button
+     * ```
+     * @throws {NotConnectedError} if the user is not logged in.
+     */
+    public async manageAccount(): Promise<void> {
+        this.ensureConnected();
+        this.ensureIframeVisible();
+        await new Promise((resolve) => setTimeout(resolve, IFRAME_READY_DELAY));
+
+        const id = ++this.messageId;
+        return new Promise<void>((resolve, reject) => {
+            const handleMessage = (event: MessageEvent) => {
+                if (event.origin !== this.widgetOrigin) return;
+                const { type, payload } = event.data || {};
+                if (type !== "ACCOUNT_CLOSED" && type !== "WIDGET_CLOSE") return;
+                window.removeEventListener("message", handleMessage);
+                this.hideIframe();
+                if (payload?.error) {
+                    const error = new WidgetError(payload.error);
+                    this.emit("error", error);
+                    reject(error);
+                } else {
+                    resolve();
+                }
+            };
+            window.addEventListener("message", handleMessage);
+            this.iframe?.contentWindow?.postMessage(
+                { id, type: "MANAGE_ACCOUNT", payload: {} },
+                this.widgetOrigin
+            );
+        });
+    }
+
+    /**
      * Returns the KMS EOA address of the connected wallet.
      * @throws {NotConnectedError} if the user is not logged in.
      */
@@ -321,11 +362,26 @@ export class OxGasAuth extends TypedEventEmitter<OxGasAuthEvents & Record<string
      * Log out the current user, clear state, and remove the iframe.
      */
     public async logout(): Promise<void> {
-        if (this.iframe?.contentWindow) {
-            this.iframe.contentWindow.postMessage(
-                { type: "LOGOUT" },
+        // The widget keeps the login in its own storage, so it must clear it.
+        // Wait for its LOGGED_OUT reply before removing the iframe: removing it
+        // straight after posting dropped the message and the next login() silently
+        // restored the old account. With no iframe (e.g. after a page reload),
+        // open one hidden just to log out.
+        try {
+            if (!this.iframe) {
+                const ready = this.waitForWidgetMessage("WIDGET_READY", LOGOUT_TIMEOUT);
+                this.injectIframe();
+                this.hideIframe();
+                await ready;
+            }
+            const ack = this.waitForWidgetMessage("LOGGED_OUT", LOGOUT_TIMEOUT);
+            this.iframe?.contentWindow?.postMessage(
+                { type: "LOGOUT", payload: { apiKey: this.apiKey } },
                 this.widgetOrigin
             );
+            await ack;
+        } catch {
+            this.log("Logout: widget did not confirm; clearing local state anyway");
         }
         this.walletInfo = null;
         this.setState("disconnected");
@@ -383,6 +439,23 @@ export class OxGasAuth extends TypedEventEmitter<OxGasAuthEvents & Record<string
 
         document.body.appendChild(this.iframe);
         this.log("Iframe injected");
+    }
+
+    /** Resolves on the next `type` message from the widget; rejects after `ms`. */
+    private waitForWidgetMessage(type: string, ms: number): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            const handler = (event: MessageEvent) => {
+                if (event.origin !== this.widgetOrigin || event.data?.type !== type) return;
+                clearTimeout(timer);
+                window.removeEventListener("message", handler);
+                resolve();
+            };
+            const timer = setTimeout(() => {
+                window.removeEventListener("message", handler);
+                reject(new Error(`${type} timeout`));
+            }, ms);
+            window.addEventListener("message", handler);
+        });
     }
 
     private ensureIframeVisible(): void {

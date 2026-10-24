@@ -9,6 +9,8 @@ export const DEFAULT_SIGN_TIMEOUT = 120_000; // 2 minutes
 
 /** Delay before posting to iframe after making it visible (ms) */
 export const IFRAME_READY_DELAY = 300;
+/** How long logout() waits for the widget to confirm it cleared the saved login. */
+export const LOGOUT_TIMEOUT = 3000;
 
 /** Widget iframe element ID */
 export const IFRAME_ID = "oxgas-auth-iframe";
@@ -17,7 +19,7 @@ export const IFRAME_ID = "oxgas-auth-iframe";
 export const DEFAULT_Z_INDEX = 99999;
 
 /** Package version */
-export const VERSION = "1.1.1";
+export const VERSION = "1.3.0";
 
 /**
  * Common EVM network names for display in the widget.
