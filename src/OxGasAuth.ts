@@ -292,6 +292,46 @@ export class OxGasAuth extends TypedEventEmitter<OxGasAuthEvents & Record<string
     }
 
     /**
+     * Open the user's "Login methods" screen, where they can add or remove backup
+     * ways to log in (a Google account, a backup email) so they can always get
+     * back to the same wallet. Resolves when the user closes the screen.
+     *
+     * @example
+     * ```ts
+     * await auth.manageAccount(); // e.g. from a "Login & recovery" button
+     * ```
+     * @throws {NotConnectedError} if the user is not logged in.
+     */
+    public async manageAccount(): Promise<void> {
+        this.ensureConnected();
+        this.ensureIframeVisible();
+        await new Promise((resolve) => setTimeout(resolve, IFRAME_READY_DELAY));
+
+        const id = ++this.messageId;
+        return new Promise<void>((resolve, reject) => {
+            const handleMessage = (event: MessageEvent) => {
+                if (event.origin !== this.widgetOrigin) return;
+                const { type, payload } = event.data || {};
+                if (type !== "ACCOUNT_CLOSED" && type !== "WIDGET_CLOSE") return;
+                window.removeEventListener("message", handleMessage);
+                this.hideIframe();
+                if (payload?.error) {
+                    const error = new WidgetError(payload.error);
+                    this.emit("error", error);
+                    reject(error);
+                } else {
+                    resolve();
+                }
+            };
+            window.addEventListener("message", handleMessage);
+            this.iframe?.contentWindow?.postMessage(
+                { id, type: "MANAGE_ACCOUNT", payload: {} },
+                this.widgetOrigin
+            );
+        });
+    }
+
+    /**
      * Returns the KMS EOA address of the connected wallet.
      * @throws {NotConnectedError} if the user is not logged in.
      */
