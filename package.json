@@ -56,13 +56,13 @@
   },
   "dependencies": {
     "@0xgasless/smart-account-sdk": "^0.0.15",
-    "viem": ">=2.0.0"
+    "viem": ">=2.54.2"
   },
   "peerDependencies": {
-    "viem": ">=2.0.0"
+    "viem": ">=2.54.2"
   },
   "devDependencies": {
     "typescript": "^5.0.0",
-    "viem": "^2.0.0"
+    "viem": "^2.54.2"
   }
 }
